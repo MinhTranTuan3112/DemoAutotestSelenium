@@ -44,7 +44,7 @@ namespace NUnitWithSeleniumTestDemo
                 Log("Now creating issue on Jira");
                 const string url = "https://minhttse.atlassian.net/";
                 const string username = "minhttse172842@fpt.edu.vn";
-                const string password = "ATATT3xFfGF0OAgqK-XqwgCQbb03kwvygCZyCGURHPxTNKwYLxReryqBbAQRFnHbDwBJcnALj7tizy0GLROtFUUK6dNgbp3dLT3402PrVb1kB4LUHYthJBRuPQwa0H0hAKOidTbTgoOYSOLz9dT53z9Zo7JNhe3GwFAhy48iKbW0VhDutDr4PXg=608BB3B9";
+                const string password = "(Your API Token Key)";
                 const string AssigneeID = "712020:5c6999e8-8bf6-4d69-b493-8483b981cde1";
                 var jira = Jira.CreateRestClient(url, username, password);
                 var issue = jira.CreateIssue("GB");
@@ -52,12 +52,12 @@ namespace NUnitWithSeleniumTestDemo
                 issue.Summary = "AT_IP_FT06_If these source and destination account numbers are same, system displays an error";
                 issue.Description = "FT06_If these source and destination account numbers are same, system displays an error";
                 issue.Assignee = AssigneeID;
-                //issue["customfield_10035"] = "1/ Login as Manager" +
-                //    "\n2/ Go to Fund Transfer page" +
-                //    "\n3/ Enter the test data";
-                //issue["customfield_10039"] = "PayersAccountNo: 123456\r\nPayeeAccountNo: 123456\r\nAmount: 100.0,\r\nDescription: Send money";
-                //issue["customfield_10036"] = "A message \"Account number does not exist\" if the entered acount number does not exist";
-                //issue["customfield_10037"] = "A message \"Account number does not exist\" if the entered acount number does not exist was displayed";
+                issue["customfield_10035"] = "1/ Login as Manager" +
+                    "\n2/ Go to Fund Transfer page" +
+                    "\n3/ Enter the test data";
+                issue["customfield_10039"] = "PayersAccountNo: 123456\r\nPayeeAccountNo: 123456\r\nAmount: 100.0,\r\nDescription: Send money";
+                issue["customfield_10036"] = "A message \"Account number does not exist\" if the entered acount number does not exist";
+                issue["customfield_10037"] = "A message \"Account number does not exist\" if the entered acount number does not exist was displayed";
                 issue.SaveChanges();
                 Log("Created new issue on Jira");
             }

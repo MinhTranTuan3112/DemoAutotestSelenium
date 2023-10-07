@@ -1,1 +1,11 @@
-﻿
+﻿Going to https://demo.guru99.com/V4/
+Sent UserID
+Sent Password
+Login Operation Started
+Login Success!!!
+Login Step is done
+------------- Fund Transfer Started -------------------
+Went to Fund Transfer page
+Alert text: Payers account No and Payees account No Must Not be Same!!!
+Now creating issue on Jira
+Could not find custom field with name 'customfield_10035' on the JIRA server.

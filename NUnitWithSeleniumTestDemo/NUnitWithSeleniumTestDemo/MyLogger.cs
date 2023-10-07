@@ -9,7 +9,7 @@ namespace NUnitWithSeleniumTestDemo
     public class MyLogger
     {
         //Fields
-        private const string filePath = @"D:\Dev\C#\NUnitWithSeleniumTestDemo\NUnitWithSeleniumTestDemo\TestLog.txt";
+        private const string filePath = @"D:\Dev\C#\DemoAutotestSelenium\NUnitWithSeleniumTestDemo\NUnitWithSeleniumTestDemo\TestLog.txt";
         private static MyLogger instance = null;
         private static readonly object instanceLock = new object();
 
