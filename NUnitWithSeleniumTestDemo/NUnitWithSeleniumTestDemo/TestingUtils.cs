@@ -30,40 +30,58 @@ namespace NUnitWithSeleniumTestDemo
             {"Expected Result","customfield_10036" },
             {"Actual Result", "customfield_10037" },
         };
-       
+
         //Methods
 
         public void StartTest()
         {
 
         }
-        public void CreateIssueOnJira()
+        public async Task CreatingIssueOnJiraUsingPOSTRequest()
         {
             try
             {
-                Log("Now creating issue on Jira");
-                const string url = "https://minhttse.atlassian.net/";
-                const string username = "minhttse172842@fpt.edu.vn";
-                const string password = "(Your API Token Key)";
-                const string AssigneeID = "712020:5c6999e8-8bf6-4d69-b493-8483b981cde1";
-                var jira = Jira.CreateRestClient(url, username, password);
-                var issue = jira.CreateIssue("GB");
-                issue.Type = "10009";
-                issue.Summary = "AT_IP_FT06_If these source and destination account numbers are same, system displays an error";
-                issue.Description = "FT06_If these source and destination account numbers are same, system displays an error";
-                issue.Assignee = AssigneeID;
-                issue["customfield_10035"] = "1/ Login as Manager" +
-                    "\n2/ Go to Fund Transfer page" +
-                    "\n3/ Enter the test data";
-                issue["customfield_10039"] = "PayersAccountNo: 123456\r\nPayeeAccountNo: 123456\r\nAmount: 100.0,\r\nDescription: Send money";
-                issue["customfield_10036"] = "A message \"Account number does not exist\" if the entered acount number does not exist";
-                issue["customfield_10037"] = "A message \"Account number does not exist\" if the entered acount number does not exist was displayed";
-                issue.SaveChanges();
-                Log("Created new issue on Jira");
+                using var client = new HttpClient();
+                const string url = "https://(your project).atlassian.net/rest/api/2/issue/";
+                const string username = "(Your Username)";
+                const string password = "(Your API Tokey Key)";
+                var data = new
+                {
+                    fields = new
+                    {
+                        project = new
+                        {
+                            key = "GB"
+                        },
+                        summary = "AT_IP_FT06_If these source and destination account numbers are same, system displays an error",
+                        description = "FT06_If these source and destination account numbers are same, system displays an error",
+                        issuetype = new
+                        {
+                            name = "Story"
+                        },
+                        customfield_10036 = "A message \"Account number does not exist\" if the entered acount number does not exist",
+                        customfield_10037 = "A message \"Account number does not exist\" if the entered acount number does not exist was displayed",
+                        customfield_10039 = "PayersAccountNo: 123456\r\nPayeeAccountNo: 123456\r\nAmount: 100.0,\r\nDescription: Send money",
+                        customfield_10035 = "1/ Login as Manager\r\n2/ Go to Fund Transfer page\r\n3/ Enter the test data\r\n 4/ Press Submit"
+                    }
+                };
+                var json = Newtonsoft.Json.JsonConvert.SerializeObject(data);
+                var content = new StringContent(json, System.Text.Encoding.UTF8, "application/json");
+                client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Basic",
+                Convert.ToBase64String(System.Text.ASCIIEncoding.ASCII.GetBytes($"{username}:{password}")));
+                var response = await client.PostAsync(url, content);
+                if (response.IsSuccessStatusCode)
+                {
+                    Log("Issue created successfully");
+                }
+                else
+                {
+                    Log($"Failed to create issue. Status code: {response.StatusCode}");
+                }
             }
             catch (Exception ex)
             {
-                Log(ex.Message);
+                Log($"Creating issue on Jira error: {ex.Message}");
             }
         }
         [Test, Order(1)]
@@ -110,7 +128,7 @@ namespace NUnitWithSeleniumTestDemo
         }
         [Test, Order(2)]
         [TestCase("123456", "123456", 100.0, "Send money")]
-        public void PerformFundTransfer(string PayersAccountNo, string PayeeAccountNo, decimal Amount, string Description)
+        public async Task PerformFundTransfer(string PayersAccountNo, string PayeeAccountNo, decimal Amount, string Description)
         {
             MyLogger.Instance.LogToFile("------------- Fund Transfer Started -------------------");
             IWebElement FundTransferPageLink = driver.FindElement(By.XPath("//a[@href='FundTransInput.php']"));
@@ -146,7 +164,7 @@ namespace NUnitWithSeleniumTestDemo
             driver.SwitchTo().DefaultContent();
             Thread.Sleep(3000);
             driver.Close();
-            CreateIssueOnJira();
+            await CreatingIssueOnJiraUsingPOSTRequest();
         }
 
         public bool CheckLoginSuccess() => driver.Url.Equals(@"https://demo.guru99.com/V4/manager/Managerhomepage.php");

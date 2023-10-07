@@ -9,29 +9,23 @@ namespace NUnitWithSeleniumTestDemo
     public class MyLogger
     {
         //Fields
+        private static readonly Lazy<MyLogger> lazyInstance =
+        new Lazy<MyLogger>(() => new MyLogger());
+        //Use your own file path
         private const string filePath = @"D:\Dev\C#\DemoAutotestSelenium\NUnitWithSeleniumTestDemo\NUnitWithSeleniumTestDemo\TestLog.txt";
         private static MyLogger instance = null;
-        private static readonly object instanceLock = new object();
 
         //Constructor
         private MyLogger()
         {
 
         }
-
         //Methods
         public static MyLogger Instance
         {
             get
             {
-                lock (instanceLock)
-                {
-                    if (instance is null)
-                    {
-                        instance = new MyLogger();
-                    }
-                    return instance;
-                }
+                return lazyInstance.Value;
             }
         }
         public void LogToFile(string text)
